@@ -1,6 +1,11 @@
 # argospacexapp
+ArgoSpaceXApp is a little app to test Electron & Vue.js
 
-> An electron-vue project
+It connected with an Api Rest builded with NodeJS & ExpressJS.
+
+Objective is to build an authentification page and a CRUD page to manage a list of SpaceX ship (https://api.spacexdata.com/v1/vehicles)
+
+> Made with love with electron-vue
 
 #### Build Setup
 
