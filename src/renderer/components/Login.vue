@@ -23,12 +23,15 @@
                         <v-layout row wrap>
                             <v-flex xs9>
                                 <v-alert error dismissible transition="scale-transition" v-model="alert">
-                                    Wrong username or password.
+                                    {{ errorMessage }}
                                 </v-alert>
                             </v-flex>
                             <v-flex xs3>
                                 <p class="text-xs-right">
-                                    <v-btn type="submit" @click.native="validate"  right class="teal--text">Login</v-btn>
+                                    <v-btn type="submit" @click.native="validate" right class="teal--text">
+                                        <v-progress-circular v-bind:class="{'is-loading' : !loading }" v-bind:size="20" indeterminate class="teal--text"></v-progress-circular>
+                                        <span v-bind:class="{'is-loading' : loading }">Login</span>
+                                    </v-btn>
                                 </p>
                             </v-flex>
                         </v-layout>
@@ -53,17 +56,21 @@
         padding-top: 20px;
     }
 
-    .btn--right{
-        right:0!important;
-        margin-right:0!important;
+    .btn--right {
+        right: 0 !important;
+        margin-right: 0 !important;
     }
 
     .alert {
-        padding:5px 16px 5px 16px!important;
+        padding: 5px 16px 5px 16px !important;
     }
 
-    .alert > div{
+    .alert > div {
         font-size: 12px;
+    }
+
+    .is-loading {
+        display:none!important;
     }
 </style>
 <script>
@@ -76,7 +83,9 @@
                 isValidate: false,
                 username: '',
                 password: '',
-                alert: false
+                alert: false,
+                errorMessage: '',
+                loading: false
             };
         },
         watch: {
@@ -96,6 +105,7 @@
             },
             signIn() {
                 if (this.isValidate === true) {
+                    this.loading = true;
                     const userData = {
                         username: this.username,
                         password: this.password
@@ -105,12 +115,19 @@
                         url: 'http://localhost:3000/user/login',
                         data: userData
                     }).then((response) => {
+                        this.loading = false;
                         if (response.data.status === 'success') {
                             this.$router.push('/home');
                         }
                     }).catch((e) => {
-                        if (e.response.statusText === 'Unauthorized') {
-                           this.alert = true;
+                        this.loading = false;
+                        this.alert = true;
+                        if (typeof (e.response) !== 'undefined') {
+                            if (e.response.statusText === 'Unauthorized') {
+                                this.errorMessage = 'Wrong username or password.';
+                            }
+                        } else {
+                            this.errorMessage = 'Network Error';
                         }
                     });
                 }
