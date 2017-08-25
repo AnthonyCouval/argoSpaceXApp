@@ -10,15 +10,23 @@
                                 v-model="username"
                                 label="Username"
                                 id="username"
+                                :rules="rules"
                         ></v-text-field>
                         <v-text-field
+                                type="password"
                                 name="password"
                                 v-model="password"
                                 label="Password"
                                 id="password"
+                                :rules="rules"
                         ></v-text-field>
+                        <v-flex>
+                        <v-alert error dismissible transition="scale-transition" v-model="alert">
+                            Wrong username or password.
+                        </v-alert>
+                        </v-flex>
                         <v-flex offset-sm9>
-                            <v-btn type="submit" flat class="teal--text">Login</v-btn>
+                            <v-btn type="submit" @click.native="validate" flat class="teal--text">Login</v-btn>
                         </v-flex>
                     </v-flex>
                 </v-card>
@@ -47,39 +55,48 @@
     export default {
         data() {
             return {
+                rules: [],
+                isValidate: false,
                 username: '',
-                password: ''
+                password: '',
+                alert: false
             };
         },
-        computed: {
-            formIsValid() {
-                return this.username !== ''
-                    && this.password !== '';
+        watch: {
+            username() {
+                if (this.username.length > 0) {
+                    this.isValidate = true;
+                    this.rules = [() => !!this.username || 'Required'];
+                } else {
+                    this.isValidate = false;
+                    this.rules = [];
+                }
             }
         },
         methods: {
+            validate() {
+                this.rules = [() => !!this.username || 'Required'];
+            },
             signIn() {
-                if (!this.formIsValid) {
-                    return; // @TODO message d'erreur
+                if (this.isValidate === true) {
+                    const userData = {
+                        username: this.username,
+                        password: this.password
+                    };
+                    axios({
+                        method: 'post',
+                        url: 'http://localhost:3000/user/login',
+                        data: userData
+                    }).then((response) => {
+                        if (response.data.status === 'success') {
+                            this.$router.push('/home');
+                        }
+                    }).catch((e) => {
+                        if (e.response.statusText === 'Unauthorized') {
+                           this.alert = true;
+                        }
+                    });
                 }
-                const userData = {
-                    username: this.username,
-                    password: this.password
-                };
-                axios({
-                    method: 'post',
-                    url: 'http://localhost:3000/user/login',
-                    data: userData
-                }).then((response) => {
-                    if (response.data.status === 'success') {
-                        this.$router.push('/home');
-                    }
-                }).catch((e) => {
-                    console.log(e);
-                });
-
-               /* this.$store.dispatch('createMeetup', meetupData);
-                this.$router.push('/meetups');*/
             }
         }
     };
