@@ -1,5 +1,5 @@
 <template>
-    <v-layout>
+    <v-layout row wrap>
         <v-flex xs5 offset-sm3>
             <form @submit.prevent="signIn">
                 <v-card>
@@ -20,14 +20,18 @@
                                 id="password"
                                 :rules="rules"
                         ></v-text-field>
-                        <v-flex>
-                        <v-alert error dismissible transition="scale-transition" v-model="alert">
-                            Wrong username or password.
-                        </v-alert>
-                        </v-flex>
-                        <v-flex offset-sm9>
-                            <v-btn type="submit" @click.native="validate" flat class="teal--text">Login</v-btn>
-                        </v-flex>
+                        <v-layout row wrap>
+                            <v-flex xs9>
+                                <v-alert error dismissible transition="scale-transition" v-model="alert">
+                                    Wrong username or password.
+                                </v-alert>
+                            </v-flex>
+                            <v-flex xs3>
+                                <p class="text-xs-right">
+                                    <v-btn type="submit" @click.native="validate"  right class="teal--text">Login</v-btn>
+                                </p>
+                            </v-flex>
+                        </v-layout>
                     </v-flex>
                 </v-card>
             </form>
@@ -47,6 +51,19 @@
         display: block;
         margin: 20px auto 20px auto;
         padding-top: 20px;
+    }
+
+    .btn--right{
+        right:0!important;
+        margin-right:0!important;
+    }
+
+    .alert {
+        padding:5px 16px 5px 16px!important;
+    }
+
+    .alert > div{
+        font-size: 12px;
     }
 </style>
 <script>
