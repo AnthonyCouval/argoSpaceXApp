@@ -205,7 +205,7 @@
             getAllShip() {
                 axios({
                     method: 'get',
-                    url: 'https://xjifswdgii.localtunnel.me/ship'
+                    url: 'https://vyijxzepcv.localtunnel.me/ship'
                 }).then((response) => {
                     this.ships = response.data;
                 }).catch((e) => {
@@ -215,7 +215,7 @@
                 if (item.newName !== item.name) {
                     axios({
                         method: 'put',
-                        url: `https://xjifswdgii.localtunnel.me/ship/${item._id}`,
+                        url: `https://vyijxzepcv.localtunnel.me/ship/${item._id}`,
                         data: item
                     }).then((response) => {
                         if (response.data.status === 'success') {
@@ -230,7 +230,7 @@
             logout() {
                 axios({
                     method: 'get',
-                    url: 'https://xjifswdgii.localtunnel.me/user/logout'
+                    url: 'https://vyijxzepcv.localtunnel.me/user/logout'
                 }).then((response) => {
                     if (response.data.status === 'success') {
                         this.$router.push('/login');

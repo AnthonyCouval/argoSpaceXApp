@@ -12,8 +12,6 @@ import store from './store';
 require('vuetify/dist/vuetify.min.css');
 require('vue-image-lightbox/dist/vue-image-lightbox.min.css');
 
-const userApi = 'http://localhost:3000/user/';
-
 Vue.use(Vuetify, VueAxios, axios);
 Vue.use(VueLazyLoad);
 Vue.use(VueTouch, { name: 'v-touch' });
