@@ -112,7 +112,7 @@
                     };
                     axios({
                         method: 'post',
-                        url: 'https://vyijxzepcv.localtunnel.me/user/login',
+                        url: 'https://b2f2cbb6.ngrok.io/ship/user/login',
                         data: userData
                     }).then((response) => {
                         this.loading = false;
