@@ -2,16 +2,21 @@ import Vue from 'vue';
 import axios from 'axios';
 import Vuetify from 'vuetify';
 import VueAxios from 'vue-axios';
+import VueLazyLoad from 'vue-lazyload';
+import VueTouch from 'vue-touch';
 
 import App from './App';
 import router from './router';
 import store from './store';
 
-import('../../node_modules/vuetify/dist/vuetify.min.css'); // Ensure you are using css-loader
+require('vuetify/dist/vuetify.min.css');
+require('vue-image-lightbox/dist/vue-image-lightbox.min.css');
 
 const userApi = 'http://localhost:3000/user/';
 
 Vue.use(Vuetify, VueAxios, axios);
+Vue.use(VueLazyLoad);
+Vue.use(VueTouch, { name: 'v-touch' });
 
 if (!process.env.IS_WEB) Vue.use(require('vue-electron'));
 Vue.http = Vue.prototype.$http = axios;
