@@ -39,7 +39,7 @@
         </v-navigation-drawer>
         <main>
             <lightbox :images="images" :showThumbs="showThumbs" ref="lightbox"></lightbox>
-            <v-card>
+            <v-card class="group-custom-home">
                 <v-card-title>
                     <div>
                         <v-alert success dismissible v-model="alertSuccess">
@@ -129,7 +129,7 @@
         color: #0D47A1 !important;
     }
 
-    .input-group__details:after {
+    .group-custom-home .input-group__details:after {
         background-color: #0D47A1 !important;
     }
 

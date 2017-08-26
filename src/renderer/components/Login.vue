@@ -3,7 +3,7 @@
         <v-flex xs5 offset-sm3>
             <form @submit.prevent="signIn">
                 <v-card>
-                    <v-flex xs12 sm6 offset-sm3>
+                    <v-flex xs12 sm6 offset-sm3 class="group-custom-login">
                         <img src="~@/assets/argolight-logo.png" width="100%">
                         <v-text-field
                                 name="username"
@@ -42,7 +42,7 @@
     </v-layout>
 </template>
 <style>
-    .input-group__details:after {
+    .group-custom-login .input-group__details:after {
         background-color: #009688 !important;
     }
 
