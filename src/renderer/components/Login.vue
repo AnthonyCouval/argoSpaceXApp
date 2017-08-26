@@ -4,7 +4,7 @@
             <form @submit.prevent="signIn">
                 <v-card>
                     <v-flex xs12 sm6 offset-sm3 class="group-custom-login">
-                        <img src="~@/assets/argolight-logo.png" width="100%">
+                        <img src="~@/assets/spacex-logo-x.png" width="100%">
                         <v-text-field
                                 name="username"
                                 v-model="username"
@@ -19,6 +19,7 @@
                                 label="Password"
                                 id="password"
                                 :rules="rules"
+                                class="blue--text text--darken-4"
                         ></v-text-field>
                         <v-layout row wrap>
                             <v-flex xs9>
@@ -28,8 +29,13 @@
                             </v-flex>
                             <v-flex xs3>
                                 <p class="text-xs-right">
-                                    <v-btn type="submit" @click.native="validate" right class="teal--text">
-                                        <v-progress-circular v-bind:class="{'is-loading' : !loading }" v-bind:size="20" indeterminate class="teal--text"></v-progress-circular>
+                                    <v-btn type="submit" @click.native="validate" right class="blue--text text--darken-4">
+                                        <v-progress-circular
+                                                v-bind:class="{'is-loading' : !loading }"
+                                                v-bind:size="20"
+                                                indeterminate
+                                                class="blue--text text--darken-4">
+                                        </v-progress-circular>
                                         <span v-bind:class="{'is-loading' : loading }">Login</span>
                                     </v-btn>
                                 </p>
@@ -42,14 +48,6 @@
     </v-layout>
 </template>
 <style>
-    .group-custom-login .input-group__details:after {
-        background-color: #009688 !important;
-    }
-
-    .input-group--focused.input-group--text-field:not(.input-group--single-line):not(.input-group--error) label {
-        color: #009688 !important;
-    }
-
     img {
         display: block;
         margin: 20px auto 20px auto;
@@ -75,6 +73,7 @@
 </style>
 <script>
     import axios from 'axios';
+    import config from '../../main/config';
 
     export default {
         data() {
@@ -112,7 +111,7 @@
                     };
                     axios({
                         method: 'post',
-                        url: 'https://b2f2cbb6.ngrok.io/user/login',
+                        url: `${config.apiUrl}/user/login`,
                         data: userData
                     }).then((response) => {
                         this.loading = false;
