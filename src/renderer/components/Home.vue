@@ -38,13 +38,24 @@
             </v-card>
         </v-navigation-drawer>
         <main>
+            <div>
+                <v-alert success dismissible v-model="alertSuccess">
+                    {{ messageSucces }}
+                </v-alert>
+            </div>
             <lightbox :images="images" :showThumbs="showThumbs" ref="lightbox"></lightbox>
             <v-card class="group-custom-home">
                 <v-card-title>
-                    <div>
-                        <v-alert success dismissible v-model="alertSuccess">
-                            {{ messageSucces }}
-                        </v-alert>
+                    <div class="text-xs-center">
+                        <v-btn flat class="blue--text text--darken-4">Add</v-btn>
+                        <v-btn
+                                flat
+                                class="blue--text text--darken-4   "
+                                :disabled="disabled"
+                                @click="removeShip"
+                        >
+                            Remove
+                        </v-btn>
                     </div>
                     <v-spacer></v-spacer>
                     <v-text-field
@@ -105,6 +116,7 @@
                         <td class="text-xs-right">
                             <v-icon class="icon-touch" @click="showImg(props.item.coverUrl)">visibility</v-icon>
                         </td>
+
                     </template>
                     <template slot="pageText" scope="{ pageStart, pageStop }">
                         From {{ pageStart }} to {{ pageStop }}
@@ -136,26 +148,29 @@
     .custom-card, .icon-touch {
         cursor: pointer;
     }
-    .custom-card:hover {
-        background-color: rgba(0,0,0,.12);
-    }
-        .custom-icon {
-            width: 54px;
-            justify-content: flex-start!important;
-            font-size: 21px!important;
-        }
 
-        .custom-icon + span {
-            font-size: 13px!important;
-        }
+    .custom-card:hover {
+        background-color: rgba(0, 0, 0, .12);
+    }
+
+    .custom-icon {
+        width: 54px;
+        justify-content: flex-start !important;
+        font-size: 21px !important;
+    }
+
+    .custom-icon + span {
+        font-size: 13px !important;
+    }
 
     .vue-lb-footer-count {
-        display:none!important;
+        display: none !important;
     }
 </style>
 <script>
     import axios from 'axios';
     import Lightbox from 'vue-image-lightbox';
+    import config from '../../main/config';
 
     export default {
         components: {
@@ -171,6 +186,7 @@
                 selected: [],
                 images: [],
                 showThumbs: false,
+                disabled: true,
                 headers: [
                     {
                         text: 'Name',
@@ -201,11 +217,16 @@
         mounted() {
             this.getAllShip();
         },
+        watch: {
+            selected() {
+                this.disabled = this.selected.length < 1;
+            }
+        },
         methods: {
             getAllShip() {
                 axios({
                     method: 'get',
-                    url: 'https://b2f2cbb6.ngrok.io/ship'
+                    url: `${config.apiUrl}/ship`
                 }).then((response) => {
                     this.ships = response.data;
                 }).catch((e) => {
@@ -215,7 +236,7 @@
                 if (item.newName !== item.name) {
                     axios({
                         method: 'put',
-                        url: `https://b2f2cbb6.ngrok.io/ship/${item._id}`,
+                        url: `${config.apiUrl}/ship/${item._id}`,
                         data: item
                     }).then((response) => {
                         if (response.data.status === 'success') {
@@ -230,7 +251,7 @@
             logout() {
                 axios({
                     method: 'get',
-                    url: 'https://b2f2cbb6.ngrok.io/user/logout'
+                    url: `${config.apiUrl}//user/logout`
                 }).then((response) => {
                     if (response.data.status === 'success') {
                         this.$router.push('/login');
@@ -246,6 +267,28 @@
                         src: url
                     }];
                     this.$refs.lightbox.lightBoxOn = true;
+                }
+            },
+            removeShip() {
+                for (const ship of this.selected) {
+                    axios({
+                        method: 'delete',
+                        url: `${config.apiUrl}/ship/${ship._id}`
+                    }).then((response) => {
+                        if (response.data.status === 'success') {
+                            this.alertSuccess = true;
+                            this.messageSucces = response.data.message;
+                            //pour retrouver la row correspondante et l'effacer
+                            this.selected.forEach((sRow) => {
+                                const idx = this.ships.findIndex(mRow => mRow.name === sRow.name);
+                                if (idx !== -1) {
+                                    this.ships.splice(idx, 1);
+                                }
+                            });
+                        }
+                    }).catch((e) => {
+                        console.log(e);
+                    });
                 }
             }
         }

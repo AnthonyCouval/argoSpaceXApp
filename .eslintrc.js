@@ -29,6 +29,7 @@ module.exports = {
     'object-curly-spacing': [0, 'never'],
     'comma-dangle': ['error', {'functions': 'ignore'}],
     'no-underscore-dangle': 0,
+    'no-restricted-syntax': ['error', 'ForInStatement', 'LabeledStatement', 'WithStatement'],
     // allow debugger during development
     'no-debugger': process.env.NODE_ENV === 'production' ? 2 : 0
   }
