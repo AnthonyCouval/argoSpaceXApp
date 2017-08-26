@@ -19,7 +19,7 @@
                                 label="Password"
                                 id="password"
                                 :rules="rules"
-                                class="indigo--text text--darken-4"
+                                class="blue--text text--darken-4"
                         ></v-text-field>
                         <v-layout row wrap>
                             <v-flex xs9>
@@ -29,12 +29,12 @@
                             </v-flex>
                             <v-flex xs3>
                                 <p class="text-xs-right">
-                                    <v-btn type="submit" @click.native="validate" right class="indigo--text text--darken-4">
+                                    <v-btn type="submit" @click.native="validate" right class="blue--text text--darken-4">
                                         <v-progress-circular
                                                 v-bind:class="{'is-loading' : !loading }"
                                                 v-bind:size="20"
                                                 indeterminate
-                                                class="indigo--text text--darken-4">
+                                                class="blue--text text--darken-4">
                                         </v-progress-circular>
                                         <span v-bind:class="{'is-loading' : loading }">Login</span>
                                     </v-btn>
@@ -73,6 +73,7 @@
 </style>
 <script>
     import axios from 'axios';
+    import config from '../../main/config';
 
     export default {
         data() {
@@ -110,7 +111,7 @@
                     };
                     axios({
                         method: 'post',
-                        url: 'https://b2f2cbb6.ngrok.io/user/login',
+                        url: `${config.apiUrl}/user/login`,
                         data: userData
                     }).then((response) => {
                         this.loading = false;
