@@ -262,6 +262,7 @@
                 search: '',
                 pagination: {},
                 alertSuccess: false,
+                alertError: false,
                 messageSuccess: '',
                 messageError: '',
                 drawer: true,
@@ -339,7 +340,7 @@
                             this.messageSuccess = response.data.message;
                         }
                     }).catch((e) => {
-                        this.messageSuccess = e.response;
+                        this.messageError = e.response;
                     });
                 }
             },
@@ -352,7 +353,7 @@
                         this.$router.push('/login');
                     }
                 }).catch((e) => {
-                    this.messageSuccess = e.response;
+                    this.messageError = e.response;
                 });
             },
             showImg(url) {
@@ -382,7 +383,7 @@
                             });
                         }
                     }).catch((e) => {
-                        this.messageSuccess = e.response;
+                        this.messageError = e.response;
                     });
                 }
             },
@@ -407,7 +408,7 @@
                 }).then((response) => {
                     this.ships = response.data;
                 }).catch((e) => {
-                    this.messageSuccess = e.response;
+                    this.messageError = e.response;
                 });
             }
         }
