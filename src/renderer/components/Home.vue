@@ -352,7 +352,7 @@
                 });
             },
             showImg(url) {
-                if (url !== 'undefined') {
+                if (url !== undefined) {
                     this.images = [{
                         thumb: url,
                         src: url
