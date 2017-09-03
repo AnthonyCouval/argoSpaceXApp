@@ -40,10 +40,13 @@
         <main>
             <div>
                 <v-alert success dismissible v-model="alertSuccess">
-                    {{ messageSucces }}
+                    {{ messageSuccess }}
+                </v-alert>
+                <v-alert error  dismissible v-model="alertError">
+                    {{ messageError}}
                 </v-alert>
             </div>
-            <lightbox :images="images" :showThumbs="showThumbs" ref="lightbox"></lightbox>
+            <lightbox :images="images" :showThumbs="showThumbs" ref="lightbox" class="lightbox"></lightbox>
             <v-card class="group-custom-home">
                 <v-card-title>
                     <div class="text-xs-center">
@@ -105,9 +108,10 @@
                                 <v-text-field
                                         slot="input"
                                         label="Edit"
-                                        v-bind:value="props.item.name"
-                                        v-on:change="e => props.item.name = e.target.value"
-                                        single-line counter="counter"
+                                        v-model="props.item.name"
+                                        single-line
+                                        counter="counter"
+                                        :rules="[max25chars]"
                                 ></v-text-field>
                             </v-edit-dialog>
                         </td>
@@ -183,8 +187,10 @@
                             </v-card-text>
                             <v-card-actions>
                                 <v-spacer></v-spacer>
-                                <v-btn class="blue--text text--darken-4" flat @click.native="dialog = false">Close</v-btn>
-                                <v-btn class="blue--text text--darken-4" flat @click="submitShip" type="submit">Submit</v-btn>
+                                <v-btn class="blue--text text--darken-4" flat @click.native="dialog = false">Close
+                                </v-btn>
+                                <v-btn class="blue--text text--darken-4" flat @click="submitShip" type="submit">Submit
+                                </v-btn>
                             </v-card-actions>
                         </v-form>
                     </v-card>
@@ -205,6 +211,10 @@
 
     .input-group--focused .icon {
         color: #0D47A1 !important;
+    }
+
+    .blue--text.btn--disabled {
+        color: rgba(0, 0, 0, .26)!important;
     }
 
     .group-custom-home .input-group__details:after {
@@ -232,6 +242,10 @@
     .vue-lb-footer-count {
         display: none !important;
     }
+
+    .lightbox > .vue-lb-container{
+        padding-left: 300px;
+    }
 </style>
 <script>
     import axios from 'axios';
@@ -244,10 +258,13 @@
         },
         data() {
             return {
+                max25chars: v => v.length <= 25 || 'Input too long!',
                 search: '',
                 pagination: {},
                 alertSuccess: false,
-                messageSucces: '',
+                alertError: false,
+                messageSuccess: '',
+                messageError: '',
                 drawer: true,
                 selected: [],
                 images: [],
@@ -320,10 +337,10 @@
                     }).then((response) => {
                         if (response.data.status === 'success') {
                             this.alertSuccess = true;
-                            this.messageSucces = response.data.message;
+                            this.messageSuccess = response.data.message;
                         }
                     }).catch((e) => {
-                        console.log(e);
+                        this.messageError = e.response;
                     });
                 }
             },
@@ -336,11 +353,11 @@
                         this.$router.push('/login');
                     }
                 }).catch((e) => {
-                    console.log(e);
+                    this.messageError = e.response;
                 });
             },
             showImg(url) {
-                if (url !== 'undefined') {
+                if (url !== undefined) {
                     this.images = [{
                         thumb: url,
                         src: url
@@ -356,7 +373,7 @@
                     }).then((response) => {
                         if (response.data.status === 'success') {
                             this.alertSuccess = true;
-                            this.messageSucces = response.data.message;
+                            this.messageSuccess = response.data.message;
                             //pour retrouver la row correspondante et l'effacer
                             this.selected.forEach((sRow) => {
                                 const idx = this.ships.findIndex(mRow => mRow.name === sRow.name);
@@ -366,7 +383,7 @@
                             });
                         }
                     }).catch((e) => {
-                        console.log(e);
+                        this.messageError = e.response;
                     });
                 }
             },
@@ -391,7 +408,7 @@
                 }).then((response) => {
                     this.ships = response.data;
                 }).catch((e) => {
-                    console.log(e);
+                    this.messageError = e.response;
                 });
             }
         }
