@@ -1,49 +1,52 @@
 <template>
     <v-layout row wrap>
         <v-flex xs5 offset-sm3>
-            <form @submit.prevent="signIn">
-                <v-card>
-                    <v-flex xs12 sm6 offset-sm3 class="group-custom-login">
-                        <img src="~@/assets/spacex-logo-x.png" width="100%">
+            <v-card>
+                <v-flex xs12 sm6 offset-sm3 class="group-custom-login">
+                    <img src="~@/assets/spacex-logo-x.png" width="100%">
+                    <v-form v-model="valid" ref="form">
                         <v-text-field
                                 name="username"
                                 v-model="username"
+                                :rules="usernameRules"
                                 label="Username"
                                 id="username"
-                                :rules="rules"
+                                required
                         ></v-text-field>
                         <v-text-field
                                 type="password"
                                 name="password"
                                 v-model="password"
+                                :rules="passwordRules"
                                 label="Password"
                                 id="password"
-                                :rules="rules"
+                                required
                                 class="blue--text text--darken-4"
                         ></v-text-field>
-                        <v-layout row wrap>
-                            <v-flex xs9>
-                                <v-alert error dismissible transition="scale-transition" v-model="alert">
-                                    {{ errorMessage }}
-                                </v-alert>
-                            </v-flex>
-                            <v-flex xs3>
-                                <p class="text-xs-right">
-                                    <v-btn type="submit" @click.native="validate" right class="blue--text text--darken-4">
-                                        <v-progress-circular
-                                                v-bind:class="{'is-loading' : !loading }"
-                                                v-bind:size="20"
-                                                indeterminate
-                                                class="blue--text text--darken-4">
-                                        </v-progress-circular>
-                                        <span v-bind:class="{'is-loading' : loading }">Login</span>
-                                    </v-btn>
-                                </p>
-                            </v-flex>
-                        </v-layout>
-                    </v-flex>
-                </v-card>
-            </form>
+                    </v-form>
+                    <v-layout row wrap>
+                        <v-flex xs9>
+                            <v-alert error dismissible transition="scale-transition" v-model="alert">
+                                {{ errorMessage }}
+                            </v-alert>
+                        </v-flex>
+                        <v-flex xs3>
+                            <p class="text-xs-right">
+                                <v-btn type="submit" @click="submit" right
+                                       class="blue--text text--darken-4">
+                                    <v-progress-circular
+                                            v-bind:class="{'is-loading' : !loading }"
+                                            v-bind:size="20"
+                                            indeterminate
+                                            class="blue--text text--darken-4">
+                                    </v-progress-circular>
+                                    <span v-bind:class="{'is-loading' : loading }">Login</span>
+                                </v-btn>
+                            </p>
+                        </v-flex>
+                    </v-layout>
+                </v-flex>
+            </v-card>
         </v-flex>
     </v-layout>
 </template>
@@ -68,7 +71,7 @@
     }
 
     .is-loading {
-        display:none!important;
+        display: none !important;
     }
 </style>
 <script>
@@ -78,32 +81,24 @@
     export default {
         data() {
             return {
-                rules: [],
-                isValidate: false,
+                valid: false,
                 username: '',
+                usernameRules: [
+                    v => !!v || 'Name is required'
+                ],
                 password: '',
+                passwordRules: [
+                    v => !!v || 'Password is required'
+                ],
                 alert: false,
                 errorMessage: '',
                 loading: false
             };
         },
-        watch: {
-            username() {
-                if (this.username.length > 0) {
-                    this.isValidate = true;
-                    this.rules = [() => !!this.username || 'Required'];
-                } else {
-                    this.isValidate = false;
-                    this.rules = [];
-                }
-            }
-        },
         methods: {
-            validate() {
-                this.rules = [() => !!this.username || 'Required'];
-            },
-            signIn() {
-                if (this.isValidate === true) {
+            submit() {
+                this.$refs.form.validate();
+                if (this.valid === true) {
                     this.loading = true;
                     const userData = {
                         username: this.username,
