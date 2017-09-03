@@ -43,7 +43,7 @@
                     {{ messageSucces }}
                 </v-alert>
             </div>
-            <lightbox :images="images" :showThumbs="showThumbs" ref="lightbox"></lightbox>
+            <lightbox :images="images" :showThumbs="showThumbs" ref="lightbox" class="lightbox"></lightbox>
             <v-card class="group-custom-home">
                 <v-card-title>
                     <div class="text-xs-center">
@@ -238,6 +238,10 @@
 
     .vue-lb-footer-count {
         display: none !important;
+    }
+
+    .lightbox > .vue-lb-container{
+        padding-left: 300px;
     }
 </style>
 <script>
