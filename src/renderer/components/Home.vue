@@ -40,7 +40,10 @@
         <main>
             <div>
                 <v-alert success dismissible v-model="alertSuccess">
-                    {{ messageSucces }}
+                    {{ messageSuccess }}
+                </v-alert>
+                <v-alert error  dismissible v-model="alertError">
+                    {{ messageError}}
                 </v-alert>
             </div>
             <lightbox :images="images" :showThumbs="showThumbs" ref="lightbox" class="lightbox"></lightbox>
@@ -259,7 +262,8 @@
                 search: '',
                 pagination: {},
                 alertSuccess: false,
-                messageSucces: '',
+                messageSuccess: '',
+                messageError: '',
                 drawer: true,
                 selected: [],
                 images: [],
@@ -332,10 +336,10 @@
                     }).then((response) => {
                         if (response.data.status === 'success') {
                             this.alertSuccess = true;
-                            this.messageSucces = response.data.message;
+                            this.messageSuccess = response.data.message;
                         }
                     }).catch((e) => {
-                        console.log(e);
+                        this.messageSuccess = e.response;
                     });
                 }
             },
@@ -348,7 +352,7 @@
                         this.$router.push('/login');
                     }
                 }).catch((e) => {
-                    console.log(e);
+                    this.messageSuccess = e.response;
                 });
             },
             showImg(url) {
@@ -368,7 +372,7 @@
                     }).then((response) => {
                         if (response.data.status === 'success') {
                             this.alertSuccess = true;
-                            this.messageSucces = response.data.message;
+                            this.messageSuccess = response.data.message;
                             //pour retrouver la row correspondante et l'effacer
                             this.selected.forEach((sRow) => {
                                 const idx = this.ships.findIndex(mRow => mRow.name === sRow.name);
@@ -378,7 +382,7 @@
                             });
                         }
                     }).catch((e) => {
-                        console.log(e);
+                        this.messageSuccess = e.response;
                     });
                 }
             },
@@ -403,7 +407,7 @@
                 }).then((response) => {
                     this.ships = response.data;
                 }).catch((e) => {
-                    console.log(e);
+                    this.messageSuccess = e.response;
                 });
             }
         }
