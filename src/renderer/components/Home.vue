@@ -105,9 +105,10 @@
                                 <v-text-field
                                         slot="input"
                                         label="Edit"
-                                        v-bind:value="props.item.name"
-                                        v-on:change="e => props.item.name = e.target.value"
-                                        single-line counter="counter"
+                                        v-model="props.item.name"
+                                        single-line
+                                        counter="counter"
+                                        :rules="[max25chars]"
                                 ></v-text-field>
                             </v-edit-dialog>
                         </td>
@@ -183,8 +184,10 @@
                             </v-card-text>
                             <v-card-actions>
                                 <v-spacer></v-spacer>
-                                <v-btn class="blue--text text--darken-4" flat @click.native="dialog = false">Close</v-btn>
-                                <v-btn class="blue--text text--darken-4" flat @click="submitShip" type="submit">Submit</v-btn>
+                                <v-btn class="blue--text text--darken-4" flat @click.native="dialog = false">Close
+                                </v-btn>
+                                <v-btn class="blue--text text--darken-4" flat @click="submitShip" type="submit">Submit
+                                </v-btn>
                             </v-card-actions>
                         </v-form>
                     </v-card>
@@ -205,6 +208,10 @@
 
     .input-group--focused .icon {
         color: #0D47A1 !important;
+    }
+
+    .blue--text.btn--disabled {
+        color: rgba(0, 0, 0, .26)!important;
     }
 
     .group-custom-home .input-group__details:after {
@@ -244,6 +251,7 @@
         },
         data() {
             return {
+                max25chars: v => v.length <= 25 || 'Input too long!',
                 search: '',
                 pagination: {},
                 alertSuccess: false,
