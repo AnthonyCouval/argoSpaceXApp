@@ -274,6 +274,7 @@
                 }).then((response) => {
                     this.ships = response.data;
                 }).catch((e) => {
+                    this.alertError = true;
                     this.messageError = e.response;
                 });
             },
@@ -289,6 +290,7 @@
                             this.messageSuccess = response.data.message;
                         }
                     }).catch((e) => {
+                        this.alertError = true;
                         this.messageError = e.response;
                     });
                 }
@@ -302,6 +304,7 @@
                         this.$router.push('/login');
                     }
                 }).catch((e) => {
+                    this.alertError = true;
                     this.messageError = e.response;
                 });
             },
@@ -332,6 +335,7 @@
                             });
                         }
                     }).catch((e) => {
+                        this.alertError = true;
                         this.messageError = e.response;
                     });
                 }
