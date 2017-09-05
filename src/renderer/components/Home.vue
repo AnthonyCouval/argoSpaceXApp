@@ -135,11 +135,10 @@
                 </v-data-table>
             </v-card>
             <v-layout row justify-center>
-                <v-dialog v-model="dialog" persistent>
-                    <v-card>
-                        <AddShipForm></AddShipForm>
-                    </v-card>
-                </v-dialog>
+                <AddShipForm
+                        :dialog="dialog"
+                        @closeDialog="(state) => dialog = state "
+                ></AddShipForm>
             </v-layout>
         </main>
     </v-app>
