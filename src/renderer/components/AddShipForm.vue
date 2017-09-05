@@ -117,7 +117,8 @@
                     url: `${config.apiUrl}/ship`,
                     data
                 }).then((response) => {
-                    this.data = response.data;
+                    this.$emit('newShipAdded', response.data);
+                    this.$emit('closeDialog', false);
                 }).catch((e) => {
                     this.messageError = e.response;
                 });

@@ -138,6 +138,7 @@
                 <AddShipForm
                         :dialog="dialog"
                         @closeDialog="(state) => dialog = state "
+                        @newShipAdded="pushNewShip"
                 ></AddShipForm>
             </v-layout>
         </main>
@@ -253,6 +254,19 @@
             }
         },
         methods: {
+            pushNewShip(e) {
+                if (e.data) {
+                    delete e.data._id;
+                    this.ships.push(e.data);
+                } else {
+                    this.alertError = true;
+                    if (e.code === 11000) {
+                        this.messageError = 'A ship with this name already exists !';
+                    } else {
+                        this.messageError = e.errmsg;
+                    }
+                }
+            },
             getAllShip() {
                 axios({
                     method: 'get',
@@ -260,6 +274,7 @@
                 }).then((response) => {
                     this.ships = response.data;
                 }).catch((e) => {
+                    this.messageError = e.response;
                 });
             },
             putValue(item) {
