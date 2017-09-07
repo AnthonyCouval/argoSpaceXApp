@@ -35,6 +35,10 @@
         </v-navigation-drawer>
         <v-toolbar class="white">
             <v-toolbar-title>Manage Ship</v-toolbar-title>
+            <v-spacer></v-spacer>
+            <v-avatar>
+                <v-icon x-large class="grey--text text--darken-4">account_circle</v-icon>
+            </v-avatar>
         </v-toolbar>
         <main>
             <div>
