@@ -16,7 +16,10 @@
                             label="Active"
                             v-model="active"
                             required
-                            :items="['True', 'False']"
+                            :items="[
+                                {text : 'True', value : true},
+                                {text : 'False', value : false},
+                            ]"
                             :rules="requiredRules"
                     ></v-select>
                     <v-text-field label="Stages" v-model="stages"></v-text-field>
@@ -117,7 +120,8 @@
                     url: `${config.apiUrl}/ship`,
                     data
                 }).then((response) => {
-                    this.data = response.data;
+                    this.$emit('newShipAdded', response.data);
+                    this.$emit('closeDialog', false);
                 }).catch((e) => {
                     this.messageError = e.response;
                 });
