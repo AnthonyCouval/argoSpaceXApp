@@ -16,7 +16,10 @@
                             label="Active"
                             v-model="active"
                             required
-                            :items="['True', 'False']"
+                            :items="[
+                                {text : 'True', value : true},
+                                {text : 'False', value : false},
+                            ]"
                             :rules="requiredRules"
                     ></v-select>
                     <v-text-field label="Stages" v-model="stages"></v-text-field>

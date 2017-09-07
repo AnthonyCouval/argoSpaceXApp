@@ -62,8 +62,19 @@
                                         >
                                             <v-container fill-height fluid>
                                                 <v-layout fill-height>
-                                                    <v-flex xs12 align-end flexbox>
-                                                        <span class="headline white--text" v-text="card.title"></span>
+                                                    <v-flex d-flex xs12 sm2 child-flex>
+                                                        <v-card tile flat>
+                                                            <v-icon x-large light :class="card.iconColor">{{ card.icon }}</v-icon>
+                                                        </v-card>
+                                                    </v-flex>
+                                                    <v-flex d-flex xs12 flexbox>
+                                                        <v-layout row wrap>
+                                                            <v-flex xs12>
+                                                        <p class="black--text margin-text" v-text="card.title"></p>
+                                                        <p class="black--text margin-text small-text"
+                                                           v-text="card.subtitle"></p>
+                                                            </v-flex>
+                                                            </v-layout>
                                                     </v-flex>
                                                 </v-layout>
                                             </v-container>
@@ -111,6 +122,8 @@
                                         v-bind:search="search"
                                         v-model="selected"
                                         selected-key="name"
+                                        select-all="blue darken-4"
+                                        class="elevation-1"
                                 >
                                     <template slot="headerCell" scope="props">
                                             <span v-tooltip:bottom="{ 'html': props.header.text }">
@@ -253,6 +266,21 @@
     .toolbar__title {
         color: #373a3c;
     }
+
+    .margin-text {
+        font-size: 16px;
+        margin: 0 0 1px 10px;
+    }
+
+    .small-text {
+        color: #818a91!important;
+        font-size: 13px;
+    }
+
+    .margin-text.small-text {
+        margin-bottom: 0;
+    }
+
 </style>
 <script>
     import axios from 'axios';
@@ -280,11 +308,7 @@
                 showThumbs: false,
                 disabled: true,
                 dialog: false,
-                cards: [
-                    {title: 'Pre-fab homes', src: '/static/doc-images/cards/house.jpg', flex: 4},
-                    {title: 'Favorite road trips', src: '/static/doc-images/cards/road.jpg', flex: 4},
-                    {title: 'Best airlines', src: '/static/doc-images/cards/plane.jpg', flex: 4}
-                ],
+                cards: [],
                 headers: [
                     {
                         text: 'Name',
@@ -317,14 +341,54 @@
         },
         watch: {
             selected() {
+                console.log(this.selected.length < 1);
                 this.disabled = this.selected.length < 1;
             }
         },
         methods: {
+            refreshCard() {
+                const shipsActive = this.ships.filter(e => e.active === false);
+                const nbShipsPercent = this.ships.filter(e => e.successRatePct !== null);
+                const bestShip = this.ships.filter(e => e.successRatePct > 90 && e.stages >= 2);
+
+                const shipsSRPTotal = this.ships.reduce((sum, value) => {
+                    if (value.successRatePct !== null) {
+                        return sum + value.successRatePct;
+                    }
+                    return sum;
+                }, 0);
+                const totalPercent = parseInt(shipsSRPTotal, 10) / parseInt(nbShipsPercent.length, 10);
+                const nullShip = this.ships.length - nbShipsPercent.length;
+
+                this.cards = [
+                    {
+                        title: `${this.ships.length} ships listed`,
+                        subtitle: `${shipsActive.length} active`,
+                        icon: 'flight',
+                        flex: 4,
+                        iconColor: 'indigo--text text--lighten-2'
+                    },
+                    {
+                        title: `${totalPercent} % total of success`,
+                        subtitle: `${nullShip} null`,
+                        icon: 'build',
+                        flex: 4,
+                        iconColor: 'yellow--text text--darken-1'
+                    },
+                    {
+                        title: 'Best ship',
+                        subtitle: `${bestShip[0].name} from ${bestShip[0].country} `,
+                        icon: 'thumb_up',
+                        iconColor: 'green--text text--lighten-1',
+                        flex: 4
+                    }
+                ];
+            },
             pushNewShip(e) {
                 if (e.data) {
                     delete e.data._id;
                     this.ships.push(e.data);
+                    this.refreshCard();
                 } else {
                     this.alertError = true;
                     if (e.code === 11000) {
@@ -340,6 +404,7 @@
                     url: `${config.apiUrl}/ship`
                 }).then((response) => {
                     this.ships = response.data;
+                    this.refreshCard();
                 }).catch((e) => {
                     this.alertError = true;
                     this.messageError = e.response;
@@ -390,10 +455,10 @@
                         method: 'delete',
                         url: `${config.apiUrl}/ship/${ship._id}`
                     }).then((response) => {
+                        this.disabled = true;
                         if (response.data.status === 'success') {
                             this.alertSuccess = true;
                             this.messageSuccess = response.data.message;
-                            this.disabled = true;
                             //pour retrouver la row correspondante et l'effacer
                             this.selected.forEach((sRow) => {
                                 const idx = this.ships.findIndex(mRow => mRow.name === sRow.name);
