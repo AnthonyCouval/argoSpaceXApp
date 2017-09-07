@@ -341,7 +341,6 @@
         },
         watch: {
             selected() {
-                console.log(this.selected.length < 1);
                 this.disabled = this.selected.length < 1;
             }
         },
