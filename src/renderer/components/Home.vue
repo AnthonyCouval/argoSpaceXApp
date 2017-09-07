@@ -347,7 +347,9 @@
         methods: {
             refreshCard() {
                 const shipsActive = this.ships.filter(e => e.active === false);
-                const nbShipsPercent = this.ships.filter(e => e.successRatePct !== null);
+                const nbShipsPercent = this.ships.filter(
+                    e => e.successRatePct !== null && e.successRatePct !== 0
+                );
                 const bestShip = this.ships.filter(e => e.successRatePct > 90 && e.stages >= 2);
 
                 const shipsSRPTotal = this.ships.reduce((sum, value) => {
@@ -368,7 +370,7 @@
                         iconColor: 'indigo--text text--lighten-2'
                     },
                     {
-                        title: `${totalPercent} % total of success`,
+                        title: `${totalPercent.toFixed(2)} % total of success`,
                         subtitle: `${nullShip} null`,
                         icon: 'build',
                         flex: 4,
@@ -385,7 +387,6 @@
             },
             pushNewShip(e) {
                 if (e.data) {
-                    delete e.data._id;
                     this.ships.push(e.data);
                     this.refreshCard();
                 } else {
@@ -450,11 +451,11 @@
             },
             removeShip() {
                 for (const ship of this.selected) {
+                    console.log(ship._id);
                     axios({
                         method: 'delete',
                         url: `${config.apiUrl}/ship/${ship._id}`
                     }).then((response) => {
-                        this.disabled = true;
                         if (response.data.status === 'success') {
                             this.alertSuccess = true;
                             this.messageSuccess = response.data.message;
@@ -465,6 +466,8 @@
                                     this.ships.splice(idx, 1);
                                 }
                             });
+                            this.selected = [];
+                            this.refreshCard();
                         }
                     }).catch((e) => {
                         this.alertError = true;
