@@ -289,7 +289,7 @@
 <script>
     import axios from 'axios';
     import Lightbox from 'vue-image-lightbox';
-    import AddShipForm from './AddShipForm.vue';
+    import AddShipForm from './AddShipForm/index.vue';
     import config from '../../main/config';
 
     export default {
